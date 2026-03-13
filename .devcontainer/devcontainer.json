@@ -1,0 +1,20 @@
+{
+  "name": "exampion",
+  "dockerComposeFile": "compose.yml",
+  "service": "exampion",
+  "workspaceFolder": "/exampion",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "eamodio.gitlens",
+        "astral.ty",
+        "ms-asuretools.vscode-containers",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+  "postStartCommand": "uv sync && uv run pre-commit install"
+}

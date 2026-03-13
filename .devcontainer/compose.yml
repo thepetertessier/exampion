@@ -1,0 +1,8 @@
+services:
+  exampion:
+    image: ghcr.io/astral-sh/uv:python3.14-bookworm
+    volumes:
+      - ../:/exampion:cached
+    command: sleep infinity
+    env_file:
+      - .env
