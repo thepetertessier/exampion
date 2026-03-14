@@ -16,5 +16,6 @@
       ]
     }
   },
-  "postStartCommand": "uv sync && uv run pre-commit install"
+  "postStartCommand": "uv sync && uv run pre-commit install",
+  "remoteUser": "root"
 }
