@@ -11,8 +11,7 @@
         "tamasfe.even-better-toml",
         "eamodio.gitlens",
         "astral.ty",
-        "ms-asuretools.vscode-containers",
-        "eamodio.gitlens"
+        "ms-azuretools.vscode-docker"
       ]
     }
   },
