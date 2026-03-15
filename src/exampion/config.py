@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     BOT_TOKEN: str
     ACCOUNTABILITY_PARTNER_ID: int
+    MY_ID: int
     REVIEW_TIMEOUT_SECONDS: int
 
 
