@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from .client import client
 from .config import get_cfg
-from .reviewer import launch_review
+from .reviewer import Review
 
 if TYPE_CHECKING:
     from discord.message import Message
@@ -20,7 +20,7 @@ async def on_message(message: Message):
 
     if message.content.startswith("$review"):
         try:
-            await launch_review(message.channel)
+            await Review(message.channel).launch()
         except TimeoutError:
             pass
 
