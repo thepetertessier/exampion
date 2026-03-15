@@ -1,4 +1,5 @@
 # This example requires the 'message_content' intent.
+import os
 from typing import TYPE_CHECKING
 
 from discord import Client, Intents
@@ -26,5 +27,11 @@ async def on_message(message: Message):
         await message.channel.send("Hello!")
 
 
+def get_token() -> str:
+    if not (token := os.getenv("BOT_TOKEN")):
+        raise RuntimeError("'BOT_TOKEN' env var not set!")
+    return token
+
+
 if __name__ == "__main__":
-    client.run("your token here")
+    client.run(get_token())
