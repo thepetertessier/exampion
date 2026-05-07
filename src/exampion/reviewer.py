@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from .client import client
-from .config import get_cfg
+from exampion.client import client
+from exampion.config import get_cfg
 
 if TYPE_CHECKING:
     from discord.message import Message, MessageableChannel
@@ -22,7 +22,7 @@ class Review:
             return (message.author.id, message.channel.id) == (self.user_id, self.channel.id)
 
         try:
-            logger.debug(f"Waiting up to {timeout} for response...")
+            logger.debug(f"Waiting up to {timeout}s for response...")
             msg = await client.wait_for("message", check=check, timeout=timeout)
             response = msg.content.lower().strip()
             logger.debug(f"Received response: {response}")
@@ -30,6 +30,10 @@ class Review:
 
         except TimeoutError:
             partner_id = get_cfg().ACCOUNTABILITY_PARTNER_ID
+            logger.warning(
+                f"Response took longer than {timeout}s: Pinging accountability partner "
+                f"{partner_id}..."
+            )
             await self.channel.send(
                 f"<@{self.user_id}> did not respond within {timeout}s. <@{partner_id}>, please "
                 "check on them!"
@@ -37,12 +41,13 @@ class Review:
             raise
 
     async def _get_score(self, habit: str) -> int:
+        logger.debug(f"Getting score for habit: {habit}")
         while True:
             await self.channel.send(f"{habit} (1-7):")
             response = await self._wait_for_response()
 
             try:
-                score = int(response)
+                score = int(response[0] if response else "")
                 if 1 <= score <= 7:
                     await self.channel.send(f"Got it! {habit}: {score}/7")
                     return score

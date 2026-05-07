@@ -1,34 +1,26 @@
-from typing import TYPE_CHECKING
-
 from loguru import logger
 
 from exampion.client import client
 from exampion.config import get_cfg
 from exampion.reviewer import Review
 
-if TYPE_CHECKING:
-    from discord.message import Message
-
 
 @client.event
 async def on_ready():
     logger.info(f"We have logged in as {client.user}")
 
+    # Assuming the bot is in one guild with one text channel
+    guild = client.guilds[0]
+    channel = guild.text_channels[0]
+    logger.debug(f"Initiating review ({guild=}, {channel=})...")
 
-@client.event
-async def on_message(message: Message):
-    if message.author == client.user:
-        return
+    try:
+        await Review(channel).launch()
+    except TimeoutError:
+        logger.warning("Review timeout out!")
 
-    if message.content.startswith("$review"):
-        logger.info("Message starts with '$review': initiating review...")
-        try:
-            await Review(message.channel).launch()
-        except TimeoutError:
-            logger.warning("Review timeout out!")
-
-        logger.info("Review finished! Closing client...")
-        await client.close()
+    logger.info("Review finished! Closing client...")
+    await client.close()
 
 
 def setup_logging() -> None:

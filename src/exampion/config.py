@@ -11,6 +11,4 @@ class Settings(BaseSettings):
     REVIEW_TIMEOUT_SECONDS: int = 3600  # 1 hour
 
 
-@lru_cache(maxsize=1)
-def get_cfg() -> Settings:
-    return Settings()  # ty:ignore[missing-argument]
+get_cfg = lru_cache(maxsize=1)(Settings)
