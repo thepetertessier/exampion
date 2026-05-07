@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
 
-from .client import client
-from .config import get_cfg
-from .reviewer import Review
+from loguru import logger
+
+from exampion.client import client
+from exampion.config import get_cfg
+from exampion.reviewer import Review
 
 if TYPE_CHECKING:
     from discord.message import Message
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 @client.event
 async def on_ready():
-    print(f"We have logged in as {client.user}")
+    logger.info(f"We have logged in as {client.user}")
 
 
 @client.event
@@ -26,4 +28,6 @@ async def on_message(message: Message):
 
 
 if __name__ == "__main__":
-    client.run(get_cfg().BOT_TOKEN)
+    logger.info("Started Exampion.")
+    client.run(get_cfg().BOT_TOKEN.get_secret_value())
+    logger.info("Exampion finished.")
