@@ -9,6 +9,23 @@ from exampion.config import get_cfg
 if TYPE_CHECKING:
     from discord.message import Message, MessageableChannel
 
+HABITS = (
+    "Waking up fast",
+    "Angelus",
+    "Daily mass",
+    "10 minutes of prayer + reflection + text intention",
+    "Getting ready for bed by 10:30, 10:45 latest",
+    "Night prayer",
+    "[Optional] Rosary",
+    "[Virtue] Prayer intentionality",
+    "[Virtue] Humility",
+    "[Virtue] Intentionality with time (<2 hours vegging)",
+    "[Virtue] Chastity",
+    "[Wednesday] Michael check-in",
+    "[Thursday] Holy hour",
+    "[Friday] Lunch fast",
+)
+
 
 @dataclass
 class Review:
@@ -40,21 +57,28 @@ class Review:
             )
             raise
 
-    async def _get_score(self, habit: str) -> int:
+    async def _get_score(self, habit: str) -> int | None:
         logger.debug(f"Getting score for habit: {habit}")
         while True:
-            await self.channel.send(f"{habit} (1-7):")
+            await self.channel.send(f"{habit} (1-7, or s to skip):")
             response = await self._wait_for_response()
 
+            first = (response[0] if response else "").lower()
+            if first == "s":
+                await self.channel.send(f"Skipping {habit}...")
+                return
+
             try:
-                score = int(response[0] if response else "")
-                if 1 <= score <= 7:
-                    await self.channel.send(f"Got it! {habit}: {score}/7")
-                    return score
-                else:
-                    await self.channel.send("Please enter a number between 1 and 7.")
+                score = int(first)
             except ValueError:
                 await self.channel.send("Please enter a valid number.")
+                return
+
+            if 1 <= score <= 7:
+                await self.channel.send(f"Got it! {habit}: {score}/7")
+                return score
+            else:
+                await self.channel.send("Please enter a number between 1 and 7.")
 
     async def launch(self) -> None:
         """Start the nightly review process."""
@@ -70,10 +94,7 @@ class Review:
 
         await self.channel.send("Great! Let's begin. Rate each habit on a scale of 1-7.\n")
 
-        scores = [
-            await self._get_score(habit)
-            for habit in ("Daily mass", "10 minutes of prayer", "Rosary", "Bedtime")
-        ]
+        scores = [score for habit in HABITS if (score := await self._get_score(habit)) is not None]
 
         if scores:
             overall_score = sum(scores) / len(scores)
