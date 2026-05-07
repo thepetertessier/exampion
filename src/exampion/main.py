@@ -32,6 +32,7 @@ async def on_message(message: Message):
 
 
 if __name__ == "__main__":
+    logger.add("logs/exampion.log", rotation="1 day", retention="30 days", level="DEBUG")
     logger.info("Started Exampion.")
     client.run(get_cfg().BOT_TOKEN.get_secret_value())
     logger.info("Exampion finished.")

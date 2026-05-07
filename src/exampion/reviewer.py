@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from loguru import logger
+
 from .client import client
 from .config import get_cfg
 
@@ -20,8 +22,11 @@ class Review:
             return (message.author.id, message.channel.id) == (self.user_id, self.channel.id)
 
         try:
+            logger.debug(f"Waiting up to {timeout} for response...")
             msg = await client.wait_for("message", check=check, timeout=timeout)
-            return msg.content.lower().strip()
+            response = msg.content.lower().strip()
+            logger.debug(f"Received response: {response}")
+            return response
 
         except TimeoutError:
             partner_id = get_cfg().ACCOUNTABILITY_PARTNER_ID
@@ -67,6 +72,7 @@ class Review:
 
         if scores:
             overall_score = sum(scores) / len(scores)
+            logger.info(f"Got overall score: {overall_score:.1f}")
             await self.channel.send(
                 f"\n📊 **Review Complete!**\n"
                 f"Overall score: **{overall_score:.1f}/7**\n"
