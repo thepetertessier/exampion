@@ -21,10 +21,14 @@ async def on_message(message: Message):
         return
 
     if message.content.startswith("$review"):
+        logger.info("Message starts with '$review': initiating review...")
         try:
             await Review(message.channel).launch()
         except TimeoutError:
-            pass
+            logger.warning("Review timeout out!")
+
+        logger.info("Review finished! Closing client...")
+        await client.close()
 
 
 if __name__ == "__main__":
