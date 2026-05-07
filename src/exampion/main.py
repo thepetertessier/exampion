@@ -35,7 +35,7 @@ def main():
     logger.add("logs/exampion.log", rotation="1 day", retention="30 days", level="DEBUG")
     logger.info("Started Exampion.")
     token = get_cfg().BOT_TOKEN.get_secret_value()
-    logger.debug(f"Using bot token: {token[:8]}...")
+    logger.debug(f"Using bot token: {token[:4]}...{token[-4:]}")
     client.run(token)
     logger.info("Exampion finished.")
 
