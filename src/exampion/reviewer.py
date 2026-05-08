@@ -66,13 +66,13 @@ class Review:
             first = (response[0] if response else "").lower()
             if first == "s":
                 await self.channel.send(f"Skipping {habit}...")
-                return
+                return None
 
             try:
                 score = int(first)
             except ValueError:
                 await self.channel.send("Please enter a valid number.")
-                return
+                continue
 
             if 1 <= score <= 7:
                 await self.channel.send(f"Got it! {habit}: {score}/7")
