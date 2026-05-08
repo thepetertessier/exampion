@@ -2,8 +2,9 @@ name: Daily Review
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # 3am UTC = 10pm EST
-  workflow_dispatch:        # allows manual trigger from GitHub UI
+    - cron: '0 22 * * *'
+      timezone: 'America/New_York'
+  workflow_dispatch:  # allows manual trigger from GitHub UI
 
 jobs:
   run-bot:
