@@ -2,7 +2,7 @@ name: Daily Review
 
 on:
   schedule:
-    - cron: '0 22 * * *'
+    - cron: '0 19 * * *'  # Give it buffer in case start is delayed
       timezone: 'America/New_York'
   workflow_dispatch:  # allows manual trigger from GitHub UI
 

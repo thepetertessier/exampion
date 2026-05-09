@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from loguru import logger
@@ -83,8 +84,14 @@ class Review:
     async def launch(self) -> None:
         """Start the nightly review process."""
 
+        now = datetime.now(get_cfg().REVIEW_TIMEZONE)
+        suffix = (
+            "th" if 11 <= now.day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(now.day % 10, "th")
+        )
+        now_str = now.strftime(f"%A, %B {now.day}{suffix}, %Y at %-I:%M%p")
         await self.channel.send(
-            f"<@{self.user_id}>, are you ready to start your nightly review? [y/n]"
+            f"It is now {now_str}. <@{self.user_id}>, are you ready to start your nightly review? "
+            "[y/n]"
         )
         response = await self._wait_for_response()
 
